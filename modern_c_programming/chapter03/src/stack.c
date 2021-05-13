@@ -8,14 +8,14 @@
 
 #include "stack.h"
 
-int g_iStackMem[16]; 	/**< 스택 메모리 */
-int iStackCount = 0;		/**< 스택 메모리 카운터 */
+static int g_iStackMem[16]; 	/**< 스택 메모리 */
+static int iStackCount = 0;		/**< 스택 메모리 카운터 */
 
 /**
-* @brief 스택 메모리가 가득 FULL인지 확인
+* @brief 스택 메모리가  FULL인지 확인
 * @return 스택메모리가 FULL이면 True, 아니면 False
 */
-bool isStackFull(void)
+static bool isStackFull(void)
 {
 	return iStackCount == sizeof(g_iStackMem)/sizeof(int);
 }
@@ -24,7 +24,7 @@ bool isStackFull(void)
 * @brief 스택 메모리가 비어있는지 확인
 * @return 스택메모리가 비어있으면 True, 아니면 False
 */
-bool isStackEmpty(void)
+static bool isStackEmpty(void)
 {
 	return iStackCount == 0;
 }
