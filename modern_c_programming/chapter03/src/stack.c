@@ -1,44 +1,45 @@
 /**
 * @file stack.c
 * @brief 스택 알고리즘 함수
-* @detail PUSH와  POP을 이용하여 데이터를 메모리에 저장하고 저장된 데이터를 가져올수 있다.
+* @details PUSH와  POP을 이용하여 데이터를 메모리에 저장하고 저장된 데이터를 가져올수 있다.
 * @date 2021/05/21
 */
 
 
 #include "stack.h"
 
-static int g_iStackMem[16]; 	/**< 스택 메모리 */
-static int iStackCount = 0;		/**< 스택 메모리 카운터 */
-
 /**
 * @brief 스택 메모리가  FULL인지 확인
+* @param pstStack 스택자료구조 정보를 가진 구조체
 * @return 스택메모리가 FULL이면 True, 아니면 False
 */
-static bool isStackFull(void)
+static bool isStackFull(const STACK *pstStack)
 {
-	return iStackCount == sizeof(g_iStackMem)/sizeof(int);
+	return pstStack->iStackCount == pstStack->iStackSize;
 }
 
 /**
 * @brief 스택 메모리가 비어있는지 확인
+* @param pstStack 스택자료구조 정보를 가진 구조체
 * @return 스택메모리가 비어있으면 True, 아니면 False
 */
-static bool isStackEmpty(void)
+static bool isStackEmpty(const STACK *pstStack)
 {
-	return iStackCount == 0;
+	return pstStack->iStackCount == 0;
 }
 
-bool push(int i_iValue)
+bool push(STACK *pstStack, int i_iValue)
 {
-	if(isStackFull()) return false;
-	g_iStackMem[iStackCount++] = i_iValue;
+	if(isStackFull(pstStack))
+		return false;
+	pstStack->piStackMem[pstStack->iStackCount++] = i_iValue;
 	return true;
 }
 
-bool pop(int *o_iValue)
+bool pop(STACK *pstStack, int *o_iValue)
 {
-	if(isStackEmpty()) return false;
-	*o_iValue = g_iStackMem[--iStackCount];
+	if(isStackEmpty(pstStack))
+		return false;
+	*o_iValue = pstStack->piStackMem[--pstStack->iStackCount];
 	return true;
 }

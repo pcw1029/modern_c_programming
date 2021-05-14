@@ -9,28 +9,36 @@
 #include "stack.h"
 
 TEST(StackTest, popFromEmptyStackReturnsFalse) {
-  EXPECT_EQ(false, pop(0));
+	int iBuff[16];
+	STACK stStack = NEW_STACK(iBuff);
+	EXPECT_EQ(false, pop(&stStack, 0));
 }
 
 
 TEST(StackTest, popReturnsStackTopAndRemoveIt) {
-  EXPECT_EQ(true, push(123));
+	int iBuff[16];
+	int iRetValue;
+	STACK stStack = NEW_STACK(iBuff);
 
-  int ret;
-  EXPECT_EQ(true, pop(&ret));
-  EXPECT_EQ(123, ret);
-
-  EXPECT_EQ(false, pop(&ret));
+	EXPECT_EQ(true, push(&stStack, 123));
+	EXPECT_EQ(true, pop(&stStack, &iRetValue));
+	EXPECT_EQ(123, iRetValue);
+	EXPECT_EQ(false, pop(&stStack, &iRetValue));
 }
 
 
 TEST(StackTest, pushToFullStackReturnsFalse) {
-  for (int i = 0; i < 16; ++i) push(i);
-  EXPECT_EQ(false, push(100));
+	int iBuff[16];
+	int iRetValue;
+	STACK stStack = NEW_STACK(iBuff);
 
-  int ret;
-  EXPECT_EQ(true, pop(&ret));
-  EXPECT_EQ(15, ret);
+	for(int i=0; i<16; i++){
+		push(&stStack, i);
+	}
+	EXPECT_EQ(false,push(&stStack, 100));
+
+	EXPECT_EQ(true, pop(&stStack, &iRetValue));
+	EXPECT_EQ(15, iRetValue);
 }
 
 int main(int argc, char **argv) {
