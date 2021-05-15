@@ -14,6 +14,15 @@
 extern "C" {
 #endif
 
+typedef struct Validator{
+	bool (* const validate)(struct Validator *pstThis, int i_iValue);
+	void* const pvData;
+}VALIDATOR;
+
+typedef struct {
+	int iPrevValue;
+}PREV_DATA;
+
 /** @brief 스택에 저장할 값의 범위를 나타내는 구조체 */
 typedef struct {
 	const int iMin;	/**< 스택의 저장할 값의 최소값 */
@@ -25,12 +34,8 @@ typedef struct {
 	int iStackCount;					/**< 스택 메모리 카운터 */
 	const int iStackSize;			/**< 스택 메모리 크기 */
 	int * const piStackMem; 			/**< 스택 메모리 */
-	const RANGE * const pstRange;	/**< 스택에 저장할 데이터의 범위값을 가진 구조체 */
+	VALIDATOR * const pstValidator;	/**< 스택에 저장할 데이터의 범위값을 가진 구조체 */
 }STACK;
-
-
-#define NEW_STACK(stackMem) {0, sizeof(stackMem)/sizeof(int), (stackMem)} /**< 스택 구조체 초기화 */
-#define NEW_STACK_WITH_RANGE_CHECK(stackMem, pRange) {0, sizeof(stackMem)/sizeof(int), (stackMem), pRange} /**< 스택에 저장할 값의 범위를 검사하는 로직이 포함된 구조체 초기화 */
 
 /**
 * @brief 스택메모리에 데이터 저장
@@ -48,6 +53,28 @@ bool push(STACK *pstStack, int i_iValue);
 */
 bool pop(STACK *pstStack, int *o_iValue);
 
+/**
+* @brief 스택에 저장할 데이터의 범위 검사
+* @param pstValidator 범위값을 검사하기 위한 함수와 데이터를 가진 구조체
+* @param i_iValue 스택에 저장될 데이터
+* @return 범위 안에 있는 값이면 True, 아니면 False
+*/
+bool isRnageOk(VALIDATOR *pstValidator, int i_iValue);
+
+/**
+* @brief 스택에 저장할 데이터의 이전 데이터보다 큰 값인지 검사
+* @param pstValidator 이전 데이터와 비교하기 위한 함수와 데이터를 가진 구조체
+* @param i_iValue 스택에 저장될 데이터
+* @return 이전 데이터보다 큰값이면 True, 아니면 False
+*/
+bool checkPrevData(VALIDATOR *pstValidator, int i_iValue);
+
+
+#define NEW_STACK(stackMem) {0, sizeof(stackMem)/sizeof(int), (stackMem)} /**< 스택 구조체 초기화 */
+#define NEW_STACK_WITH_RANGE_CHECK(stackMem, pRange) {0, sizeof(stackMem)/sizeof(int), (stackMem), pRange} /**< 스택에 저장할 값의 범위를 검사하는 로직이 포함된 구조체 초기화 */
+#define NEW_STACK_WITH_VALIDATOR(stackMem, pstValidator) {0, sizeof(stackMem)/sizeof(int), (stackMem), pstValidator}
+#define RANGE_VALIDATOR(pstRange) {isRnageOk, pstRange} /**< 범위검사를 위한 구조체 초기화 */
+#define PREV_DATA_VALIDATOR(pstPrevData) {checkPrevData, pstPrevData} /**< 이전데이터 비교를 위한 구조체 초기화 */
 
 #ifdef __cplusplus
 }

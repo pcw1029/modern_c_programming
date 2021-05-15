@@ -30,19 +30,36 @@ static bool isStackEmpty(const STACK *pstStack)
 }
 
 /**
-* @brief 스택에 저장할 데이터의 범위 검사
-* @param pstRange 범위값을 가진 구조체
+* @brief 스택에 저장할 데이터의 이전 데이터보다 큰 값인지 검사
+* @param pstValidator 이전 데이터와 비교하기 위한 함수와 데이터를 가진 구조체
 * @param i_iValue 스택에 저장될 데이터
-* @return 범위 안에 있는 값이면 True, 아니면 False
+* @return 이전 데이터보다 큰값이면 True, 아니면 False
 */
-static bool isRnageOk(const RANGE *pstRange, int i_iValue)
+static bool validate(VALIDATOR *pstValidator, int i_iValue) {
+    if (! pstValidator) return true;
+    return pstValidator->validate(pstValidator, i_iValue);
+}
+
+
+bool isRnageOk(VALIDATOR *pstValidator, int i_iValue)
 {
-	return pstRange == NULL || (pstRange->iMin <= i_iValue && i_iValue <= pstRange->iMax);
+	RANGE *pstRange = (RANGE *)pstValidator->pvData;
+	return (pstRange->iMin <= i_iValue && i_iValue <= pstRange->iMax);
+}
+
+bool checkPrevData(VALIDATOR *pstValidator, int i_iValue)
+{
+	PREV_DATA* pstPrevData = (PREV_DATA *)pstValidator->pvData;
+	if(pstPrevData->iPrevValue < i_iValue){
+		pstPrevData->iPrevValue = i_iValue;
+		return true;
+	}
+	return false;
 }
 
 bool push(STACK *pstStack, int i_iValue)
 {
-	if(isStackFull(pstStack) || !isRnageOk(pstStack->pstRange, i_iValue))
+	if(isStackFull(pstStack) || !validate(pstStack->pstValidator, i_iValue))
 		return false;
 	pstStack->piStackMem[pstStack->iStackCount++] = i_iValue;
 	return true;

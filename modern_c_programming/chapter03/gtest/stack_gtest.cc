@@ -41,13 +41,24 @@ TEST(StackTest, pushToFullStackReturnsFalse) {
 	EXPECT_EQ(15, iRetValue);
 }
 
+
 TEST(StackTest, pushWithRangeCheck) {
 	int iBuff[16];
-	const RANGE stRange = {0, 9};
-	STACK stStack = NEW_STACK_WITH_RANGE_CHECK(iBuff, &stRange);
-	EXPECT_EQ(false, push(&stStack, -1));
-	EXPECT_EQ(true, push(&stStack, 5));
-	EXPECT_EQ(false, push(&stStack, 10));
+	RANGE stRange = {0, 9};
+	VALIDATOR stValidator = RANGE_VALIDATOR(&stRange);
+	STACK stStack = NEW_STACK_WITH_VALIDATOR(iBuff, &stValidator);
+    EXPECT_EQ(false, push(&stStack, -1));
+    EXPECT_EQ(true, push(&stStack, 5));
+    EXPECT_EQ(false, push(&stStack, 10));
+}
+
+TEST(StackTest, pushWithPreviousCheck) {
+	int iBuff[16];
+	PREV_DATA stPrevData = {0};
+	VALIDATOR stValidator = PREV_DATA_VALIDATOR(&stPrevData);
+	STACK stStack = NEW_STACK_WITH_VALIDATOR(iBuff, &stValidator);
+    EXPECT_EQ(true, push(&stStack, 3));
+    EXPECT_EQ(false, push(&stStack, 2));
 }
 
 int main(int argc, char **argv) {
