@@ -7,6 +7,7 @@
 
 
 #include "stack.h"
+#include <stdio.h>
 
 /**
 * @brief 스택 메모리가  FULL인지 확인
@@ -28,9 +29,20 @@ static bool isStackEmpty(const STACK *pstStack)
 	return pstStack->iStackCount == 0;
 }
 
+/**
+* @brief 스택에 저장할 데이터의 범위 검사
+* @param pstRange 범위값을 가진 구조체
+* @param i_iValue 스택에 저장될 데이터
+* @return 범위 안에 있는 값이면 True, 아니면 False
+*/
+static bool isRnageOk(const RANGE *pstRange, int i_iValue)
+{
+	return pstRange == NULL || (pstRange->iMin <= i_iValue && i_iValue <= pstRange->iMax);
+}
+
 bool push(STACK *pstStack, int i_iValue)
 {
-	if(isStackFull(pstStack))
+	if(isStackFull(pstStack) || !isRnageOk(pstStack->pstRange, i_iValue))
 		return false;
 	pstStack->piStackMem[pstStack->iStackCount++] = i_iValue;
 	return true;

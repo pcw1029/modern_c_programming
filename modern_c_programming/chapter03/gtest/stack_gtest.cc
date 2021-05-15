@@ -41,6 +41,15 @@ TEST(StackTest, pushToFullStackReturnsFalse) {
 	EXPECT_EQ(15, iRetValue);
 }
 
+TEST(StackTest, pushWithRangeCheck) {
+	int iBuff[16];
+	const RANGE stRange = {0, 9};
+	STACK stStack = NEW_STACK_WITH_RANGE_CHECK(iBuff, &stRange);
+	EXPECT_EQ(false, push(&stStack, -1));
+	EXPECT_EQ(true, push(&stStack, 5));
+	EXPECT_EQ(false, push(&stStack, 10));
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
