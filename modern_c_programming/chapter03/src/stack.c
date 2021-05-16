@@ -43,13 +43,13 @@ static bool validate(VALIDATOR *pstValidator, int i_iValue) {
 
 bool isRnageOk(VALIDATOR *pstValidator, int i_iValue)
 {
-	RANGE *pstRange = (RANGE *)pstValidator->pvData;
+	RANGE *pstRange = (RANGE *)pstValidator;
 	return (pstRange->iMin <= i_iValue && i_iValue <= pstRange->iMax);
 }
 
 bool checkPrevData(VALIDATOR *pstValidator, int i_iValue)
 {
-	PREV_DATA* pstPrevData = (PREV_DATA *)pstValidator->pvData;
+	PREV_DATA* pstPrevData = (PREV_DATA *)pstValidator;
 	if(pstPrevData->iPrevValue < i_iValue){
 		pstPrevData->iPrevValue = i_iValue;
 		return true;
